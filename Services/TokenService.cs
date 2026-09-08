@@ -9,13 +9,15 @@ namespace InternalCarrierApp.API.Services;
 public interface ITokenService
 {
     (string token, DateTime expires) GenerateToken(
-        ApplicationUser user, string role, IEnumerable<string> plantCodes);
+        ApplicationUser user, string role, IEnumerable<string> plantCodes,
+        string? securityStamp = null);
 }
 
 public class TokenService(IConfiguration config) : ITokenService
 {
     public (string token, DateTime expires) GenerateToken(
-        ApplicationUser user, string role, IEnumerable<string> plantCodes)
+        ApplicationUser user, string role, IEnumerable<string> plantCodes,
+        string? securityStamp = null)
     {
         var jwt      = config.GetSection("JwtSettings");
         var key      = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["SecretKey"]!));
@@ -31,6 +33,10 @@ public class TokenService(IConfiguration config) : ITokenService
             new("plants",                  string.Join(",", plantCodes)),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        // Lets the API invalidate tokens as soon as the account's stamp changes.
+        if (!string.IsNullOrEmpty(securityStamp))
+            claims.Add(new Claim("security_stamp", securityStamp));
 
         var token = new JwtSecurityToken(
             issuer:             jwt["Issuer"],

@@ -19,8 +19,9 @@ public class Plant
 
     public string? Description { get; set; }
 
-    public ICollection<UserPlant>    UserPlants    { get; set; } = [];
-    public ICollection<ServerRecord> Servers       { get; set; } = [];
+    public ICollection<UserPlant> UserPlants { get; set; } = [];
+    public ICollection<ServerRecord> Servers { get; set; } = [];
+    public ICollection<HardwareInventory> Inventory { get; set; } = [];
 }
 
 // ─────────────────────────────────────────────
@@ -46,11 +47,11 @@ public class ApplicationUser : IdentityUser
 // ─────────────────────────────────────────────
 public class UserPlant
 {
-    public string         UserId  { get; set; } = string.Empty;
-    public int            PlantId { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public int PlantId { get; set; }
 
-    public ApplicationUser User  { get; set; } = null!;
-    public Plant           Plant { get; set; } = null!;
+    public ApplicationUser User { get; set; } = null!;
+    public Plant Plant { get; set; } = null!;
 }
 
 // ─────────────────────────────────────────────

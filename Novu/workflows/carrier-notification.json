@@ -1,0 +1,59 @@
+{
+  "name": "Carrier Notification",
+  "workflowId": "carrier-notification",
+  "description": "General purpose notification for the internal app. Delivers to the in-app inbox and to email using the shared payload contract.",
+  "tags": ["carrier", "internal"],
+  "active": true,
+  "validatePayload": true,
+  "payloadSchema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "Short headline. Used as the inbox subject and the email subject."
+      },
+      "description": {
+        "type": "string",
+        "description": "Body text of the notification."
+      },
+      "redirect_url": {
+        "type": "string",
+        "description": "Application path the notification links to, for example /servers/42."
+      }
+    },
+    "required": ["title", "description"],
+    "additionalProperties": true
+  },
+  "preferences": {
+    "workflow": {
+      "all": { "enabled": true, "readOnly": false },
+      "channels": {
+        "in_app": { "enabled": true },
+        "email": { "enabled": true }
+      }
+    }
+  },
+  "steps": [
+    {
+      "name": "In-App",
+      "type": "in_app",
+      "controlValues": {
+        "subject": "{{ payload.title }}",
+        "body": "{{ payload.description }}",
+        "redirect": {
+          "url": "{{ payload.redirect_url }}",
+          "target": "_self"
+        }
+      }
+    },
+    {
+      "name": "Email",
+      "type": "email",
+      "controlValues": {
+        "subject": "{{ payload.title }}",
+        "editorType": "html",
+        "body": "<div style=\"font-family:Arial,Helvetica,sans-serif;font-size:14px;color:#1f2937;line-height:1.6\"><h2 style=\"margin:0 0 12px;font-size:18px\">{{ payload.title }}</h2><p style=\"margin:0 0 20px\">{{ payload.description }}</p><p style=\"margin:0 0 24px\"><a href=\"{{ payload.redirect_url }}\" style=\"display:inline-block;background:#1f2937;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:6px\">Open in Carrier</a></p><p style=\"margin:0;font-size:12px;color:#6b7280\">Sent by the Carrier internal application.</p></div>"
+      }
+    }
+  ]
+}

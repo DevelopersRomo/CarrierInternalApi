@@ -400,3 +400,9 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# Local application configuration and tool indexes
+appsettings.json
+appsettings.*.json
+!appsettings.example.json
+.codegraph/
+

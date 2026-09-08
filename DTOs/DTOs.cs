@@ -6,16 +6,16 @@ namespace InternalCarrierApp.API.DTOs;
 
 public record LoginDto(
     [Required, EmailAddress] string Email,
-    [Required]               string Password
+    [Required] string Password
 );
 
 public record RegisterDto(
-    [Required, EmailAddress]         string Email,
-    [Required, MinLength(8)]         string Password,
-    [Required, MaxLength(100)]       string FullName,
-    string?                                 JobTitle,
-    [Required]                       string Role,          // Admin | DBAAdmin | Engineer | ReadOnly
-    [Required] List<int>                    PlantIds
+    [Required, EmailAddress] string Email,
+    [Required, MinLength(8)] string Password,
+    [Required, MaxLength(100)] string FullName,
+    string? JobTitle,
+    [Required] string Role,          // Admin | DBAAdmin | Engineer | ReadOnly
+    [Required] List<int> PlantIds
 );
 
 public record TokenResponseDto(
@@ -34,73 +34,135 @@ public record PlantDto(int Id, string Code, string Name, string? Description);
 // ── SERVER ────────────────────────────────────────────────────────────────────
 
 public record ServerDto(
-    int      Id,
-    int      PlantId,
-    string   PlantCode,
-    string   ServerName,
-    string?  IpAddress,
-    string?  ApplicationDescription,
-    string?  AppName,
-    string?  Site,
-    string?  Environment,
-    string?  InfraType,
-    string?  ResourceType,
-    string?  SqlVersion,
-    string?  OperativeSystem,
-    int?     RamGb,
-    string?  CpuQty,
-    string?  DiskC,
-    string?  DiskD,
-    string?  DiskE,
-    string?  CeNumberServer,
-    string?  CeNumberSql,
-    string?  Notes,
-    int      Priority,
+    int Id,
+    int PlantId,
+    string PlantCode,
+    string ServerName,
+    string? IpAddress,
+    string? ApplicationDescription,
+    string? AppName,
+    string? Site,
+    string? Environment,
+    string? InfraType,
+    string? ResourceType,
+    string? SqlVersion,
+    string? OperativeSystem,
+    int? RamGb,
+    string? CpuQty,
+    string? DiskC,
+    string? DiskD,
+    string? DiskE,
+    string? CeNumberServer,
+    string? CeNumberSql,
+    string? Notes,
+    int Priority,
     DateTime UpdatedAt,
-    string?  LastModifiedBy
+    string? LastModifiedBy
 );
 
-public record CreateServerDto(
-    [Required] int    PlantId,
-    [Required, MaxLength(60)] string ServerName,
-    string?  IpAddress,
-    string?  ApplicationDescription,
-    string?  AppName,
-    string?  Site,
-    string?  Environment,
-    string?  InfraType,
-    string?  ResourceType,
-    string?  SqlVersion,
-    string?  OperativeSystem,
-    int?     RamGb,
-    string?  CpuQty,
-    string?  DiskC,
-    string?  DiskD,
-    string?  DiskE,
-    string?  CeNumberServer,
-    string?  CeNumberSql,
-    string?  Notes,
-    int      Priority = 0
-);
+public sealed class CreateServerDto
+{
+    [Range(1, int.MaxValue)]
+    public int PlantId { get; init; }
 
-public record UpdateServerDto(
-    [Required, MaxLength(60)] string ServerName,
-    string?  IpAddress,
-    string?  ApplicationDescription,
-    string?  AppName,
-    string?  Site,
-    string?  Environment,
-    string?  InfraType,
-    string?  ResourceType,
-    string?  SqlVersion,
-    string?  OperativeSystem,
-    int?     RamGb,
-    string?  CpuQty,
-    string?  DiskC,
-    string?  DiskD,
-    string?  DiskE,
-    string?  CeNumberServer,
-    string?  CeNumberSql,
-    string?  Notes,
-    int      Priority = 0
-);
+    [Required, MaxLength(60)]
+    public string ServerName { get; init; } = string.Empty;
+
+    [MaxLength(50)]
+    public string? IpAddress { get; init; }
+
+    [MaxLength(200)]
+    public string? ApplicationDescription { get; init; }
+
+    [MaxLength(200)]
+    public string? AppName { get; init; }
+
+    [MaxLength(30)]
+    public string? Site { get; init; }
+
+    [MaxLength(20)]
+    public string? Environment { get; init; }
+
+    [MaxLength(20)]
+    public string? InfraType { get; init; }
+
+    [MaxLength(30)]
+    public string? ResourceType { get; init; }
+
+    [MaxLength(30)]
+    public string? SqlVersion { get; init; }
+
+    [MaxLength(80)]
+    public string? OperativeSystem { get; init; }
+
+    [Range(0, int.MaxValue)]
+    public int? RamGb { get; init; }
+
+    public string? CpuQty { get; init; }
+    public string? DiskC { get; init; }
+    public string? DiskD { get; init; }
+    public string? DiskE { get; init; }
+
+    [MaxLength(20)]
+    public string? CeNumberServer { get; init; }
+
+    [MaxLength(20)]
+    public string? CeNumberSql { get; init; }
+
+    public string? Notes { get; init; }
+
+    [Range(0, int.MaxValue)]
+    public int Priority { get; init; } = 0;
+}
+
+public sealed class UpdateServerDto
+{
+    [Required, MaxLength(60)]
+    public string ServerName { get; init; } = string.Empty;
+
+    [MaxLength(50)]
+    public string? IpAddress { get; init; }
+
+    [MaxLength(200)]
+    public string? ApplicationDescription { get; init; }
+
+    [MaxLength(200)]
+    public string? AppName { get; init; }
+
+    [MaxLength(30)]
+    public string? Site { get; init; }
+
+    [MaxLength(20)]
+    public string? Environment { get; init; }
+
+    [MaxLength(20)]
+    public string? InfraType { get; init; }
+
+    [MaxLength(30)]
+    public string? ResourceType { get; init; }
+
+    [MaxLength(30)]
+    public string? SqlVersion { get; init; }
+
+    [MaxLength(80)]
+    public string? OperativeSystem { get; init; }
+
+    [Range(0, int.MaxValue)]
+    public int? RamGb { get; init; }
+
+    public string? CpuQty { get; init; }
+    public string? DiskC { get; init; }
+    public string? DiskD { get; init; }
+    public string? DiskE { get; init; }
+
+    [MaxLength(20)]
+    public string? CeNumberServer { get; init; }
+
+    [MaxLength(20)]
+    public string? CeNumberSql { get; init; }
+
+    public string? Notes { get; init; }
+
+    [Range(0, int.MaxValue)]
+    public int Priority { get; init; } = 0;
+}

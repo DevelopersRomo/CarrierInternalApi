@@ -19,4 +19,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore"                               Version="7.3.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="InternalCarrierApp.API.Tests\**\*.cs" />
+    <Content Remove="InternalCarrierApp.API.Tests\**\*" />
+    <None Remove="InternalCarrierApp.API.Tests\**\*" />
+  </ItemGroup>
+
 </Project>
