@@ -40,6 +40,8 @@ public class ApplicationUser : IdentityUser
 
     // Many-to-many with Plant
     public ICollection<UserPlant> UserPlants { get; set; } = [];
+
+    public ICollection<ApplicationOwner> ApplicationOwnerships { get; set; } = [];
 }
 
 // ─────────────────────────────────────────────
@@ -65,7 +67,7 @@ public class ServerRecord
     public int PlantId { get; set; }
     public Plant Plant { get; set; } = null!;
 
-    [Required, MaxLength(60)]
+    [Required, MaxLength(255)]
     public string ServerName { get; set; } = string.Empty;
 
     [MaxLength(50)]
@@ -120,4 +122,55 @@ public class ServerRecord
 
     [MaxLength(256)]
     public string? LastModifiedBy { get; set; }
+
+    public ICollection<ApplicationRecord> Applications { get; set; } = [];
+}
+
+// ─────────────────────────────────────────────
+// APPLICATION RECORD
+// ─────────────────────────────────────────────
+public class ApplicationRecord
+{
+    public int Id { get; set; }
+
+    [Required, MaxLength(150)]
+    public string Name { get; set; } = string.Empty;
+
+    public ICollection<ApplicationOwner> Owners { get; set; } = [];
+
+    [Required]
+    public int ServerId { get; set; }
+    public ServerRecord Server { get; set; } = null!;
+
+    [Required, MaxLength(150)]
+    public string DatabaseName { get; set; } = string.Empty;
+
+    public bool IsActive { get; set; } = true;
+
+    [Required, MaxLength(2048)]
+    public string Url { get; set; } = string.Empty;
+
+    [MaxLength(20)]
+    public string? Environment { get; set; }
+
+    [MaxLength(200)]
+    public string? Notes { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    [MaxLength(256)]
+    public string? LastModifiedBy { get; set; }
+}
+
+// ─────────────────────────────────────────────
+// APPLICATION ↔ OWNER (join table)
+// ─────────────────────────────────────────────
+public class ApplicationOwner
+{
+    public int ApplicationId { get; set; }
+    public ApplicationRecord Application { get; set; } = null!;
+
+    public string UserId { get; set; } = string.Empty;
+    public ApplicationUser User { get; set; } = null!;
 }

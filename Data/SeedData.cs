@@ -36,6 +36,10 @@ public static class SeedData
         // Aplica migraciones pendientes (crea la DB si no existe)
         await db.Database.MigrateAsync();
 
+        // Reference inventory is seeded independently from optional user accounts.
+        await PlantSeedData.InitializeAsync(db, logger);
+        await ServerSeedData.InitializeAsync(db, logger);
+
         // ── Roles ───────────────────────────────────────────────────────────────
         foreach (var role in Roles)
         {

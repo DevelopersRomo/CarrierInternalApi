@@ -4,6 +4,7 @@ using InternalCarrierApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InternalCarrierApp.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260909031113_AddApplications")]
+    partial class AddApplications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace InternalCarrierApp.API.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationOwner", b =>
-                {
-                    b.Property<int>("ApplicationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ApplicationId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ApplicationOwner");
-                });
 
             modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationRecord", b =>
                 {
@@ -73,6 +61,10 @@ namespace InternalCarrierApp.API.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("OwnerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("ServerId")
                         .HasColumnType("int");
 
@@ -87,6 +79,8 @@ namespace InternalCarrierApp.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("ServerId");
 
@@ -441,8 +435,8 @@ namespace InternalCarrierApp.API.Migrations
 
                     b.Property<string>("ServerName")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("Site")
                         .HasMaxLength(30)
@@ -610,32 +604,21 @@ namespace InternalCarrierApp.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationOwner", b =>
+            modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationRecord", b =>
                 {
-                    b.HasOne("InternalCarrierApp.API.Models.ApplicationRecord", "Application")
-                        .WithMany("Owners")
-                        .HasForeignKey("ApplicationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InternalCarrierApp.API.Models.ApplicationUser", "User")
-                        .WithMany("ApplicationOwnerships")
-                        .HasForeignKey("UserId")
+                    b.HasOne("InternalCarrierApp.API.Models.ApplicationUser", "Owner")
+                        .WithMany("OwnedApplications")
+                        .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Application");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationRecord", b =>
-                {
                     b.HasOne("InternalCarrierApp.API.Models.ServerRecord", "Server")
                         .WithMany("Applications")
                         .HasForeignKey("ServerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Owner");
 
                     b.Navigation("Server");
                 });
@@ -732,14 +715,9 @@ namespace InternalCarrierApp.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationRecord", b =>
-                {
-                    b.Navigation("Owners");
-                });
-
             modelBuilder.Entity("InternalCarrierApp.API.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("ApplicationOwnerships");
+                    b.Navigation("OwnedApplications");
 
                     b.Navigation("UserPlants");
                 });

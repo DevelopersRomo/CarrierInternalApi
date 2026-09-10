@@ -10,6 +10,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Plant> Plants { get; set; }
     public DbSet<UserPlant> UserPlants { get; set; }
     public DbSet<ServerRecord> Servers { get; set; }
+    public DbSet<ApplicationRecord> Applications { get; set; }
     public DbSet<HardwareInventory> Inventory { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -41,6 +42,30 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .WithMany(p => p.Servers)
             .HasForeignKey(s => s.PlantId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ApplicationOwner>()
+            .HasKey(owner => new { owner.ApplicationId, owner.UserId });
+
+        builder.Entity<ApplicationOwner>()
+            .HasOne(owner => owner.Application)
+            .WithMany(application => application.Owners)
+            .HasForeignKey(owner => owner.ApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<ApplicationOwner>()
+            .HasOne(owner => owner.User)
+            .WithMany(user => user.ApplicationOwnerships)
+            .HasForeignKey(owner => owner.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ApplicationRecord>()
+            .HasOne(application => application.Server)
+            .WithMany(server => server.Applications)
+            .HasForeignKey(application => application.ServerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<ApplicationRecord>()
+            .HasIndex(application => application.Name);
 
         builder.Entity<HardwareInventory>()
             .HasOne(item => item.Plant)
