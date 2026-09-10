@@ -65,7 +65,7 @@ public sealed class CreateServerDto
     [Range(1, int.MaxValue)]
     public int PlantId { get; init; }
 
-    [Required, MaxLength(60)]
+    [Required, MaxLength(255)]
     public string ServerName { get; init; } = string.Empty;
 
     [MaxLength(50)]
@@ -117,7 +117,7 @@ public sealed class CreateServerDto
 
 public sealed class UpdateServerDto
 {
-    [Required, MaxLength(60)]
+    [Required, MaxLength(255)]
     public string ServerName { get; init; } = string.Empty;
 
     [MaxLength(50)]
@@ -165,4 +165,52 @@ public sealed class UpdateServerDto
 
     [Range(0, int.MaxValue)]
     public int Priority { get; init; } = 0;
+}
+
+// ── APPLICATION ───────────────────────────────────────────────────────────────
+
+public record ApplicationDto(
+    int Id,
+    string Name,
+    List<string> OwnerIds,
+    List<string> OwnerNames,
+    string OwnerName,
+    int ServerId,
+    string ServerName,
+    string DatabaseName,
+    bool IsActive,
+    string Url,
+    string? Environment,
+    string? Notes,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    string? LastModifiedBy
+);
+
+public record ApplicationOwnerOption(string Id, string FullName, string Email);
+
+public sealed class ApplicationWriteDto
+{
+    [Required, MaxLength(150)]
+    public string Name { get; init; } = string.Empty;
+
+    [Required, MinLength(1)]
+    public List<string> OwnerIds { get; init; } = [];
+
+    [Range(1, int.MaxValue)]
+    public int ServerId { get; init; }
+
+    [Required, MaxLength(150)]
+    public string DatabaseName { get; init; } = string.Empty;
+
+    public bool IsActive { get; init; } = true;
+
+    [Required, MaxLength(2048), Url]
+    public string Url { get; init; } = string.Empty;
+
+    [MaxLength(20)]
+    public string? Environment { get; init; }
+
+    [MaxLength(200)]
+    public string? Notes { get; init; }
 }
